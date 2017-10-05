@@ -6,13 +6,15 @@ class RoomModel(db.Model):
     name = db.Column(db.String(80))
     location = db.Column(db.String(80))
 
+    reserves = db.relationship('ReserveModel', lazy='dynamic')
+
 
     def __init__(self, name, location):
         self.name = name
         self.location = location
 
     def json(self):
-        return {'name': self.name, 'location': self.location}
+        return {'name': self.name, 'reserves': [ reserve.json() for reserve in self.reserves.all()],'location': self.location}
 
     @classmethod
     def find_by_name(cls, name):
